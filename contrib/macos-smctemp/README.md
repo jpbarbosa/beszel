@@ -61,6 +61,24 @@ The script is idempotent. It will:
 Only when something overwrites the binary with an upstream build that lacks this
 feature — chiefly `beszel-agent update` or re-running Beszel's official
 installer. Restarts, reboots, and config edits do **not** require re-running.
+(A Homebrew upgrade does not affect it: neither binary is brew-managed.)
+
+## Update Beszel and keep temperatures (`update.sh`)
+
+Do **not** run `beszel-agent update` — it replaces the binary with a stock
+upstream build that drops this feature. Instead, run:
+
+```sh
+./contrib/macos-smctemp/update.sh
+```
+
+It fetches upstream, rebases this feature branch onto the latest `upstream/main`,
+fast-forwards your fork's `main`, then rebuilds + reinstalls the patched agent
+and pushes the branch — giving you the newer Beszel version *and* temperatures in
+one step. Requires a clean tree on the feature branch with an `upstream` remote
+(`git remote add upstream https://github.com/henrygd/beszel.git`). If the rebase
+hits a conflict (usually `agent/sensors_default.go`), it aborts cleanly and tells
+you how to resolve it.
 
 ## Verify
 
